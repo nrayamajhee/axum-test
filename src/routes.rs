@@ -11,12 +11,12 @@ use crate::{
 
 pub fn routes() -> Router {
   Router::new()
-    .route("/", get(ok))
+    .route("/", get(up))
     .route("/users", get(get_users).post(create_user))
     .route("/posts", get(get_posts).post(create_post))
     .route("/auth", post(login).delete(logout))
 }
 
-async fn ok() -> &'static str {
-  "OK"
+async fn up() -> &'static str {
+  "Up"
 }
