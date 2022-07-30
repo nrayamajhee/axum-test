@@ -1,5 +1,7 @@
 use crate::helpers::created_or_err;
-use axum::{extract::Extension, http::StatusCode, response::IntoResponse, Json};
+use axum::{
+  extract::Extension, headers::Cookie, http::StatusCode, response::IntoResponse, Json, TypedHeader,
+};
 use serde::{Deserialize, Serialize};
 use sqlx::{postgres::PgPool, query, query_as};
 use std::{str::FromStr, sync::Arc};
@@ -32,6 +34,7 @@ pub struct CreatePost {
 }
 
 pub async fn create_post(
+  TypedHeader(cookie): TypedHeader<Cookie>,
   Extension(pool): Extension<Arc<PgPool>>,
   Json(payload): Json<CreatePost>,
 ) -> impl IntoResponse {
@@ -42,6 +45,9 @@ pub async fn create_post(
     body,
   } = payload;
   let id = Uuid::from_str("07daa49e-a64c-4b20-96fa-07a2d56346b5").unwrap();
+  tracing::debug!("ID {:?}", id);
+  tracing::debug!("HEADER {:?}", cookie);
+  println!("HEADER {:?}", cookie);
   let res: Result<(), sqlx::Error> = try {
     let mut transaction = pool.begin().await?;
     query!(
